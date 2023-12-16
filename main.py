@@ -6,10 +6,14 @@ healthFile = fm.FileManager('data/health.txt').ExtractWords()
 politicsFile = fm.FileManager('data/politics.txt').ExtractWords()
 sportsFile = fm.FileManager('data/sports.txt').ExtractWords()
 
-wordList = set(cultureArtFile + healthFile + politicsFile + sportsFile)
+testFileTextList = fm.FileManager('data/testData.txt').ExtractToTextListsToWords()
 
+#Training metinlerinde bulunan farklı her kelimenin listelenmesi
+wordList = set(cultureArtFile + healthFile + politicsFile + sportsFile)
 wordList = list(wordList)
-kelimeDict = {}
+
+#Kelimelerin hangi metinde kaç defa geçtiğini sayan ve bunu dictionary halinde tutan dictionary
+wordDict = {}
 
 for item in wordList:
     cultureCount = cultureArtFile.count(item)
@@ -17,12 +21,12 @@ for item in wordList:
     politicsCount = politicsFile.count(item)
     sportsCount = sportsFile.count(item)
 
-    kelimeDict[item] = {'culture':cultureCount, 'health':healthCount, 'politics':politicsCount, 'sports':sportsCount}
+    wordDict[item] = {'culture':cultureCount, 'health':healthCount, 'politics':politicsCount, 'sports':sportsCount}
 
+# Bayes manager object
+bayesManager = bm.BayesManager(cultureArtFile, healthFile, politicsFile, sportsFile, wordList, wordDict)
 
-wordCountOnCategory = kelimeDict["obama"]['politics']
-allWordCount = kelimeDict["obama"]['culture'] + kelimeDict["obama"]['health']  + kelimeDict["obama"]['politics'] + kelimeDict["obama"]['sports']
-categoryTextLength = len(politicsFile)
-allTextLength = (len(politicsFile) + len(healthFile) + len(sportsFile) + len(cultureArtFile))
-print(bm.BayesManager().CalculateBayesianModel(wordCountOnCategory, allWordCount, categoryTextLength, allTextLength))
+result = bayesManager.FindCategoryOfText(testFileTextList)
 
+for item in result:
+    print(item)

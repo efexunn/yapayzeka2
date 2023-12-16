@@ -8,7 +8,7 @@ class FileManager:
            satirlar = file.readlines()
            self.text = ''.join(satirlar).lower()
 
-    # Ödev pdf'inde verilen ingilizce edatlar vb. listelenmesi.
+    # Ödev pdf'inde verilen ingilizce bağlaçlar vb. listelenmesi.
     baglaclar = ["the", "all", "off", "of", "or", "but", "and", "through", "though",
                  "although",
                  "then", "not", "in", "out", "on", "about", "too", "yet", "nor", "either", "neither",
@@ -32,6 +32,12 @@ class FileManager:
     garbage = [
         "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "#", "$", "%", "'", ".", ",", ";", ":", "“", "”", "‘", "’"
     ]
+
+    def SeperateText(self, textFile):
+        textFile = textFile.replace("\n", " ")
+        textFile = textFile.split("#")
+        return textFile
+
 
     # Yukarıda bulunan baglacları okunan dosya içerisinden silen ve yerine boşluk koyan fonksiyon
     def RemoveBaglacFromTxtFile(self,textFile):
@@ -67,7 +73,18 @@ class FileManager:
         result = self.RemoveEmptyStringFromArray(textFile)
         return result
 
-
+    def ExtractToTextListsToWords(self):
+        textFile = self.text
+        textFile = self.SeperateText(textFile)
+        textFile = self.RemoveEmptyStringFromArray(textFile)
+        for i in range(len(textFile)):
+            temp = self.RemoveBaglacFromTxtFile(textFile[i])
+            temp = self.RemoveNoktalamaFromTxtFile(temp)
+            temp = self.StringToArray(temp)
+            temp = self.RemoveGarbageFromArray(temp)
+            temp = self.RemoveEmptyStringFromArray(temp)
+            textFile[i] = temp
+        return textFile
 
 
 
