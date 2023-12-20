@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 class BayesManager:
     bayesDict = {}
+    # Constructor main fonksiyonunda hesaplanan tüm değerleri alır ve kullanılacak değerleri
+    # obje oluşturulduğunda belirler.
     def __init__(self, cultureArtFile, healthFile, politicsFile, sportsFile, wordList, wordDict):
         self.cultureArtFile = cultureArtFile
         self.healthFile = healthFile
@@ -20,12 +22,14 @@ class BayesManager:
         self.sportsFileLength = len(self.sportsFile)
         self.sumOfLengths = self.cultureFileLength + self.healthFileLength + self.politicsFileLength + self.sportsFileLength
 
-
+    # Her bir kelime ve 4 kategori için bayes sonucu hesaplar.
+    # Parametre olarak ilgili kelimenin ilgili kategoride geçme sayısını ve o kategorinin metin uzunluğunu alır
     def CalculateBayesianModel(self, wordCountOnCategory, categoryTextLength):
         result = (wordCountOnCategory + 1) / (categoryTextLength + self.allWordCount)
-
         return result
 
+    # Kelime listesindeki her bir kelimeyi kullanarak, kelime sözlüğünden çağırır.
+    # Ayrı ayrı kategoriler için Bayes sonucu hesaplar.
     def ListAllTextsBayesianModel(self):
         for word in self.wordList:
             cultureBayes = self.CalculateBayesianModel(self.wordDict[word]['culture'], self.cultureFileLength)
@@ -36,7 +40,10 @@ class BayesManager:
 
         return self.bayesDict
 
+    # Parametre olarak 12 test metinini ayrı ayrı alır. Bu metinlerdeki kelimelerin bayes sonuclarını
+    # her bir kategori için tek tek toplar ve en büyük sonucun alakalı olduğu kategoriyi döndürür
     def CalculateJudgementScores(self, text):
+        # Bayes sonuçlarını ListAllTextsBayesianModel() fonksiyonundan alır.
         bayesScoreList = self.ListAllTextsBayesianModel()
         cultureScore = 0
         healthScore = 0
@@ -65,8 +72,10 @@ class BayesManager:
         politicsScore = math.log(politicsScore)
         sportsScore = math.log(sportsScore)
 
+        # Değer olarak kategoriler içinde en büyük çıkan sayıyı alır.
         maxScore = max(cultureScore, healthScore, politicsScore, sportsScore)
 
+        # En büyük değerler ile kategori değerlerini karşılaştırır eşit çıkan değerin kategorisini string olarak döner
         if(maxScore == cultureScore):
             return "Culture Arts"
         elif(maxScore == healthScore):
@@ -76,7 +85,7 @@ class BayesManager:
         elif(maxScore == sportsScore):
             return "Sports"
 
-
+    # Matplotlib kütüphanesi ile grafik oluşturmamızı sağlayan fonksiyon
     def CreateBarChartByBayes(self,bayesDict):
         # Veri yapısı
         data = {}
@@ -110,10 +119,11 @@ class BayesManager:
         plt.title('Category Counts by Word')
 
         plt.xticks(index + 1.5 * bar_width, categories)  # Kategorilerin ortasına yerleştir
-        # plt.figure(figsize=(8, 4))
         plt.legend()
         plt.show()
 
+    # Parametre olarak test edilecek metinlerin listesini alır ve ayırarak CalculateJudgementScores fonksiyonuna gönderir.
+    # Dönen değeri sonuç listesine ekler.
     def FindCategoryOfText(self, testList):
         judgementList = []
         for i in range(len(testList)):
