@@ -29,10 +29,13 @@ class FileManager:
         ",", ".", ";", ":", "-", "_", "“", "”", "‘", "’"
     ],
 
+    # Yukarıdaki filtrelemerden kalan değerleri ve boş elemanları temizlemek için kullanılan liste
     garbage = [
         "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "#", "$", "%", "'", ".", ",", ";", ":", "“", "”", "‘", "’"
     ]
 
+    # Model olarak alınan text dosyalarındaki satır atlama boşluklarını kaldırır ve '#' işaretinden olacak şekilde
+    # metinlere ayırır.
     def SeperateText(self, textFile):
         textFile = textFile.replace("\n", " ")
         textFile = textFile.split("#")
@@ -45,25 +48,28 @@ class FileManager:
             textFile = textFile.replace(f' {baglac} ', ' ')
         return textFile
 
+    # Yukarıda bulunan noktalama listesini okunan metin içinden kaldıran fonskyion
     def RemoveNoktalamaFromTxtFile(self,textFile):
         for noktalamalar in self.noktalamalar:
             textFile = textFile.replace(f'{noktalamalar} ', ' ')
         return textFile
 
+    # Metni kelimelerin oluşturduğu bir listeye ayıran fonksiyon
     def StringToArray(self,textFile):
        return textFile.split()
 
-
+    # Metinden ayıklanamayan sayı gibi değerleri metinden silen fonksiyon
     def RemoveGarbageFromArray(self, arr):
         for i in range(len(arr)):
             for sayi in self.garbage:
                 arr[i] = arr[i].replace(f"{sayi}", "")
         return arr
 
+    # Boş kalan elemanları listeden kaldıran fonksiyon
     def RemoveEmptyStringFromArray(self, arr):
         return list(filter(lambda x : x != "", arr))
 
-
+    # Gönderilen örnek metinleri YUKARIDAKİ FONKSİYONLARI KULLANARAK parçalayıp listeleyen fonksiyon
     def ExtractWords(self):
         textFile = self.text
         textFile = self.RemoveBaglacFromTxtFile(textFile)
@@ -73,6 +79,7 @@ class FileManager:
         result = self.RemoveEmptyStringFromArray(textFile)
         return result
 
+    # Test için gönderilen txt dosyasını 12 ayrı metine ve o metinleri de kelimelerin olduğu bir sözlüğe ayıran fonksiyon.
     def ExtractToTextListsToWords(self):
         textFile = self.text
         textFile = self.SeperateText(textFile)
